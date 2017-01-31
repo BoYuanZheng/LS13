@@ -49,12 +49,18 @@ var/global/list/vr_goggles = list()
 /obj/item/clothing/glasses/virtual/Destroy()
 	var/mob/living/carbon/human/H = loc
 	if(istype(H))
-		virtual_reality.KickOut(H.mind.key)
+		if(H.mind && H.mind.InVRStorage()) //If the mind is in VR
+			for(var/client/C in clients)
+				if(C.key == H.mind.key)
+					virtual_reality.KickOut(C)
 	..()
 
 /obj/item/clothing/glasses/virtual/dropped(mob/living/carbon/human/user)
 	..()
-	virtual_reality.KickOut(user.mind.key)
+	if(user.mind && user.mind.InVRStorage()) //If the mind is in VR
+		for(var/client/C in clients)
+			if(C.key == user.mind.key)
+				virtual_reality.KickOut(C)
 
 
 //box of 4 VR headsets
